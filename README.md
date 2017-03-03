@@ -9,10 +9,10 @@ Inspired by http-prompt.
 - [x] exit
 - [x] cd
 - [x] download
-- [] upload
-- [] mkdir
-- [] rm
-- [] help
+- [ ] upload
+- [ ] mkdir
+- [ ] rm
+- [ ] help
 
 ## About NutStore
 
@@ -25,11 +25,11 @@ https://griddiary.uservoice.com/knowledgebase/articles/478287-%E5%9D%9A%E6%9E%9C
 
 ### Example DAV structure
 
-"""
+```
     ├── 我的坚果云
     ├── directory
         └── file_on_cloud.txt
-"""
+```
 
 
 ## PATH MAP
