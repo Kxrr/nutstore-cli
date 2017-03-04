@@ -25,8 +25,6 @@ class FileNotExistException(LocalException):
 
 def check_local_path(func):
     def deco(*args, **kwargs):
-        import ipdb; ipdb.set_trace()
-
         arguments = inspect.getcallargs(func, *args, **kwargs)
         local_path = arguments.get('local_path')
         if local_path and not os.path.exists(local_path):

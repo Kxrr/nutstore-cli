@@ -6,13 +6,9 @@ import logging
 from os import path as p
 from contextlib import contextmanager
 
-from urlparse import urljoin
+from six.moves import filter
+from six.moves.urllib_parse import urljoin
 from dateutil.parser import parse as dt_parse
-
-try:
-    from itertools import ifilter
-except ImportError:
-    ifilter = filter
 
 from client.file import FileTable
 from client.exceptions import check_local_path
@@ -100,7 +96,7 @@ class BaseNutStoreClient(object):
 
     def search(self, pattern):
         files = self.ls()
-        return ifilter(
+        return filter(
             lambda f: (re.search(pattern=pattern, string=f.name, flags=re.IGNORECASE) and f.size != 0), files
         )
 

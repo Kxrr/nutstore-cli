@@ -1,6 +1,7 @@
 # coding: utf-8
 from __future__ import absolute_import
 
+import sys
 from os import getenv
 
 import click
@@ -18,7 +19,7 @@ from client import NutStoreClient
 @click.argument('key', default=getenv('NUTSTORE_KEY'))
 @click.argument('working_dir', default=getenv('NUTSTORE_WORKINGDIR'))
 def cli(username, key, working_dir):
-    click.secho('NutStore Command Line Tools.\nWelcome.\n')
+    click.secho('NutStore Command Line Interface.\n{}\n'.format(sys.version))
     if not all([username, key, working_dir]):
         click.secho('Please login.', fg='cyan')
     if not username:
