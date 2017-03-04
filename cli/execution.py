@@ -4,6 +4,8 @@ from parsimonious import ParseError
 from parsimonious.grammar import Grammar
 from parsimonious.nodes import NodeVisitor
 
+from client.exceptions import WebdavException
+
 grammar = Grammar(r"""
     command     = cd / ls / exit / help / download / upload / rm
 
@@ -22,6 +24,9 @@ grammar = Grammar(r"""
 
 
 class ExecutionVisitor(NodeVisitor):
+
+    unwrapped_exceptions = (WebdavException, )
+
     def __init__(self, context):
         """
         :type context: cli.Context
@@ -52,7 +57,8 @@ class ExecutionVisitor(NodeVisitor):
 
     def visit_rm(self, node, children):
         cloud_path = children[2].text
-        self.context.client.rm(cloud_path)
+        if click.confirm('rm {}?'.format(cloud_path)):
+            self.context.client.rm(cloud_path)
 
     def visit_help(self, node, children):
         commands = [attr.lstrip('visit_') for attr in dir(self) if attr.startswith('visit_')]
@@ -81,6 +87,10 @@ def execute(command, context):
     try:
         root = grammar.parse(command)
     except ParseError:
-        click.secho('Invalid command [{}].'.format(command), fg='red')
-    else:
+        click.secho('Invalid command <{0}>.'.format(command), fg='red')
+        return
+
+    try:
         visitor.visit(root)
+    except WebdavException as e:
+        click.secho(str(e), fg='red')

@@ -15,6 +15,7 @@ except ImportError:
     ifilter = filter
 
 from client.file import FileTable
+from client.exceptions import check_local_path
 
 try:
     import easywebdav
@@ -37,7 +38,7 @@ def join(base, path, **kwargs):
     return url
 
 
-class NutStoreClient(object):
+class BaseNutStoreClient(object):
     """坚果云"""
 
     server = 'dav.jianguoyun.com'
@@ -62,23 +63,21 @@ class NutStoreClient(object):
         """Current working directory for display"""
         return self.working_dir
 
+    @check_local_path
     def upload(self, local_path, cloud_dir=None):
-        assert p.exists(local_path)
-        cloud_path = self.to_cloud_path(p.basename(local_path))
+        """Upload a local file to the cloud(with the same filename)"""
+        cloud_path = cloud_dir or self.to_cloud_path(p.basename(local_path))
         log.info('[Upload] {0} => {1}'.format(local_path, cloud_path))
         self._client.upload(local_path, cloud_path)
 
-    def download(self, cloud_file, store_path=None):
-        cloud_file = self.to_cloud_path(cloud_file)
-        local_path = store_path or tempfile.mktemp(p.splitext(cloud_file)[-1])
-        log.info('[Download] {0} => {1}'.format(cloud_file, local_path))
-        self._client.download(cloud_file, local_path)
+    @check_local_path
+    def download(self, cloud_path, local_path=None):
+        """Download a cloud file to your machine."""
+        cloud_path = self.to_cloud_path(cloud_path)
+        local_path = local_path or tempfile.mktemp(p.splitext(cloud_path)[-1])
+        log.info('[Download] {0} => {1}'.format(cloud_path, local_path))
+        self._client.download(cloud_path, local_path)
         return local_path
-
-    def formatted_ls(self):
-        table = FileTable(self.ls())
-        table.sort(key=lambda f: f.mtime)
-        return table.get_display()
 
     def ls(self):
         return self._client.ls(self._working_dir)
@@ -87,6 +86,7 @@ class NutStoreClient(object):
         self.working_dir = join(self.working_dir, directory)
 
     def rm(self, cloud_path):
+        """Remove a file on the cloud."""
         self._client.delete(self.to_cloud_path(cloud_path))
 
     def mkdir(self, directory):
@@ -113,6 +113,8 @@ class NutStoreClient(object):
         self.ls()
         return True
 
+
+class NutStoreClient(BaseNutStoreClient):
     def search_latest(self, pattern):
         """
         根据pattern获取最新的文件
@@ -123,3 +125,8 @@ class NutStoreClient(object):
     def download_latest_file(self):
         filename = self.search_latest('')
         return self.download(filename)
+
+    def formatted_ls(self):
+        table = FileTable(self.ls())
+        table.sort(key=lambda f: f.mtime)
+        return table.get_display()

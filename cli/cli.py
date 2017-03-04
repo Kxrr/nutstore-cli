@@ -28,6 +28,7 @@ def cli(username, key, working_dir):
     if not working_dir:
         working_dir = click.prompt('working dir')
 
+    # TODO: if retry after login failed(pdb?)
     client = NutStoreClient(username=username, password=key, working_dir=working_dir, check_conn=True)
     context = Context(client=client)
     history = InMemoryHistory()
