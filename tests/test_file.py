@@ -1,10 +1,10 @@
 # coding: utf-8
 
-from os.path import join
 import pickle
 import unittest
+from os.path import join
 
-from client.file import FileTable
+from nutstore_cli.client.file import FileTable
 
 
 class FileTestCase(unittest.TestCase):

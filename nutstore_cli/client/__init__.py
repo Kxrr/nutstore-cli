@@ -1,22 +1,22 @@
 # coding: utf-8
+import logging
 import re
 import sys
 import tempfile
-import logging
-from os import path as p
 from contextlib import contextmanager
+from os import path as p
 
+from nutstore_cli.client.exceptions import check_local_path
+from dateutil.parser import parse as dt_parse
 from six.moves import filter
 from six.moves.urllib_parse import urljoin
-from dateutil.parser import parse as dt_parse
 
-from client.file import FileTable
-from client.exceptions import check_local_path
+from nutstore_cli.client.file import FileTable
 
 try:
     import easywebdav
 except ImportError:
-    sys.exit('Easywebdav required, try: pip install easywebdav')
+    sys.exit('Easywebdav required, try: \npip install -e git+https://github.com/Kxrr/easywebdav.git#egg=easywebdav-1.2.1')
 
 logging.basicConfig(level=logging.DEBUG)
 logging.getLogger('requests').setLevel(logging.WARNING)

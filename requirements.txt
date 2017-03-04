@@ -3,4 +3,5 @@ parsimonious==0.7.0
 python-dateutil==2.6.0
 click==6.7
 prompt-toolkit==1.0.13
--e git+https://github.com/Kxrr/easywebdav.git@4a4eab3928572d427a256f4daccf1a557ba14643#egg=easywebdav
+-e git+https://github.com/Kxrr/easywebdav.git#egg=easywebdav-1.2.1
+# easywebdav==1.2.1

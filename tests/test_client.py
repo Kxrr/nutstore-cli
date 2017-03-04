@@ -1,7 +1,7 @@
 # coding: utf-8
 import unittest
 
-from client import join, NutStoreClient
+from nutstore_cli.client import NutStoreClient
 from tests import NutStoreTestCase
 
 

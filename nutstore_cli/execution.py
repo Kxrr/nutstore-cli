@@ -4,7 +4,7 @@ from parsimonious import ParseError
 from parsimonious.grammar import Grammar
 from parsimonious.nodes import NodeVisitor
 
-from client.exceptions import WebdavException
+from nutstore_cli.client.exceptions import WebdavException
 
 grammar = Grammar(r"""
     command     = cd / ls / exit / help / download / upload / rm

@@ -1,7 +1,7 @@
 # coding: utf-8
 import unittest
 
-from cli.execution import grammar
+from nutstore_cli.execution import grammar
 
 
 class GrammarTestCase(unittest.TestCase):

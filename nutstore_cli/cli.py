@@ -6,12 +6,12 @@ from os import getenv
 
 import click
 from prompt_toolkit import prompt
-from prompt_toolkit.history import InMemoryHistory
 from prompt_toolkit.auto_suggest import AutoSuggestFromHistory
+from prompt_toolkit.history import InMemoryHistory
 
-from cli.context import Context
-from cli.execution import execute
-from client import NutStoreClient
+from nutstore_cli.client import NutStoreClient
+from nutstore_cli.context import Context
+from nutstore_cli.execution import execute
 
 
 @click.command()

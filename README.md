@@ -1,8 +1,16 @@
 # NutStore CLI
 
-A command-line interface for NutStore.
+A command-line interface for NutStore based on WebDAV.
 
 Inspired by [http-prompt](https://github.com/eliangcs/http-prompt).
+
+## Run
+
+```
+$ pip install -e git+https://github.com/Kxrr/easywebdav.git#egg=easywebdav-1.2.1
+$ pip install nutstore-cli
+$ nutstore-cli
+```
 
 ## Commands
 
