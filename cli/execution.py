@@ -5,10 +5,12 @@ from parsimonious.grammar import Grammar
 from parsimonious.nodes import NodeVisitor
 
 grammar = Grammar(r"""
-    command     = cd / ls / exit / help / download
+    command     = cd / ls / exit / help / download / upload / rm
 
+    rm      = "rm" _ string
+    upload      = "upload" _ string
     download    = "download" _ string _ (string)?
-    help        = "h" / "help" / "?"
+    help        = "h" / "help" / "?" / "usage"
     exit        = "exit"
     ls          = "ls" / "ll"
     cd          = _ "cd" _ string _
@@ -41,15 +43,23 @@ class ExecutionVisitor(NodeVisitor):
         self.output.write('\n'.join(files))
 
     def visit_download(self, node, children):
-        remote_file = node.children[2].text
-        store_path = node.children[4].text if len(node.children) == 5 else None
-        self.context.client.download(remote_file, store_path)
+        cloud_path = children[2].text
+        store_path = children[4].text if len(node.children) == 5 else None
+        self.context.client.download(cloud_path, store_path)
+
+    def visit_upload(self, node, children):
+        local_path = children[2].text
+        self.context.client.upload(local_path)
+
+    def visit_rm(self, node, children):
+        cloud_path = children[2].text
+        self.context.client.rm(cloud_path)
 
     def visit_help(self, node, children):
         self.output.write("""
         - cd {dir}
-        - upload {local_file} {cloud_dir}
-        - download {cloud_file} {local_file}
+        - upload {local_path} {cloud_dir}
+        - download {cloud_file} {local_path}
         - mkdir {cloud_dir}
         - rm {cloud_file}
         - exit

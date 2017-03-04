@@ -3,9 +3,10 @@ import re
 import sys
 import tempfile
 import logging
-from os import path
+from os import path as p
 from contextlib import contextmanager
 
+from urlparse import urljoin
 from dateutil.parser import parse as dt_parse
 
 try:
@@ -24,8 +25,14 @@ except ImportError:
     sys.exit('Easywebdav required, try: pip install easywebdav')
 
 
-def join(*names):
-    return path.sep.join(names)
+def join(base, path, **kwargs):
+    """Copied from http-prompt/http_prompt/execution.py"""
+    if not base.endswith('/'):
+        base += '/'
+    url = urljoin(base, path, **kwargs)
+    if url.endswith('/') and not path.endswith('/'):
+        url = url[:-1]
+    return url
 
 
 class NutStoreClient(object):
@@ -35,6 +42,8 @@ class NutStoreClient(object):
     working_dir = ''
 
     def __init__(self, username, password, working_dir, check_conn=True):
+        if not working_dir.startswith('/'):
+            working_dir = '/' + working_dir
         self.cd(working_dir)
         self._client = easywebdav.connect(self.server, username=username, password=password)
 
@@ -42,38 +51,33 @@ class NutStoreClient(object):
             self.check_conn()
 
     @property
+    def _working_dir(self):
+        """Fixed path for NutStoreDAV operation"""
+        return 'dav' + self.working_dir
+
+    @property
     def cwd(self):
+        """Current working directory for display"""
         return self.working_dir
 
-    def upload(self, local, target_dir=None):
-        """
-        上传文件
+    def upload(self, local_path, cloud_dir=None):
+        assert p.exists(local_path)
+        cloud_path = self.to_cloud_path(p.basename(local_path))
+        log.info('[Upload] {0} => {1}'.format(local_path, cloud_path))
+        self._client.upload(local_path, cloud_path)
 
-        :param local: 本地文件名
-        """
-        assert path.exists(local)
-        remote = self.to_remote_path(path.basename(local))
-        log.info('[Upload] {0} => {1}'.format(local, remote))
-        self._client.upload(local, remote)
-
-    def download(self, remote_file, store_path=None):
-        """
-        下载文件
-
-        :param remote_file: 远程文件名, 例如`file_on_cloud.txt`
-        :param store_path: 存储的文件名的绝对路径, 例如`/tmp/file_on_disk.txt`
-        """
-        remote_file = self.to_remote_path(remote_file)
-        local_path = store_path or tempfile.mktemp(path.splitext(remote_file)[-1])
-        log.info('[Download] {0} => {1}'.format(remote_file, local_path))
-        self._client.download(remote_file, local_path)
+    def download(self, cloud_file, store_path=None):
+        cloud_file = self.to_cloud_path(cloud_file)
+        local_path = store_path or tempfile.mktemp(p.splitext(cloud_file)[-1])
+        log.info('[Download] {0} => {1}'.format(cloud_file, local_path))
+        self._client.download(cloud_file, local_path)
         return local_path
 
     def formatted_ls(self):
         def flat(max_width):
             def _flat(f):
                 return '{name: <{width}} {time: <{width}}'\
-                    .format(name=path.basename(f.name), time=f.mtime, width=max_width)
+                    .format(name=p.basename(f.name), time=f.mtime, width=max_width)
             return _flat
 
         files = self.ls()
@@ -81,10 +85,13 @@ class NutStoreClient(object):
         return map(flat(col_width), files)
 
     def ls(self):
-        return self._client.ls(self.working_dir)
+        return self._client.ls(self._working_dir)
 
     def cd(self, directory):
-        self.working_dir = join('dav', directory)
+        self.working_dir = join(self.working_dir, directory)
+
+    def rm(self, cloud_path):
+        self._client.delete(self.to_cloud_path(cloud_path))
 
     def mkdir(self, directory):
         return self._client.mkdir(directory)
@@ -101,13 +108,14 @@ class NutStoreClient(object):
             lambda f: (re.search(pattern=pattern, string=f.name, flags=re.IGNORECASE) and f.size != 0), files
         )
 
-    def to_remote_path(self, path):
-        if self.working_dir not in path:
-            return join(self.working_dir, path)
+    def to_cloud_path(self, path):
+        if not path.startswith('dav'):
+            return 'dav' + join(self.working_dir, path)
         return path
 
     def check_conn(self):
-        assert bool(self._client.ls(self.working_dir))
+        self.ls()
+        return True
 
     def search_latest(self, pattern):
         """

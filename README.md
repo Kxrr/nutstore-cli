@@ -2,16 +2,16 @@
 
 A command-line interface for NutStore.
 
-Inspired by http-prompt.
+Inspired by [http-prompt](https://github.com/eliangcs/http-prompt).
 
 ## Commands
 
 - [x] exit
 - [x] cd
 - [x] download
-- [ ] upload
+- [x] upload
+- [x] rm
 - [ ] mkdir
-- [ ] rm
 - [ ] help
 
 ## About NutStore
@@ -34,7 +34,5 @@ https://griddiary.uservoice.com/knowledgebase/articles/478287-%E5%9D%9A%E6%9E%9C
 
 ## PATH MAP
 
-- formatted ls(equal column)
-- download command
-- upload command
 - logging settings
+- grep

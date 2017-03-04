@@ -6,7 +6,7 @@ class Context(object):
 
     def __init__(self, client):
         """
-        :type client: NutStoreClient
+        :type client: client.NutStoreClient
         """
 
         self.client = client

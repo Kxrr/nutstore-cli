@@ -4,6 +4,3 @@ import unittest
 
 class NutStoreTestCase(unittest.TestCase):
     pass
-
-
-

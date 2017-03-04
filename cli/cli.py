@@ -1,9 +1,11 @@
 # coding: utf-8
+from __future__ import absolute_import
+
 import click
 from click import prompt
 
-from .context import Context
-from .execution import execute
+from cli.context import Context
+from cli.execution import execute
 from client import NutStoreClient
 
 
