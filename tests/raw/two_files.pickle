@@ -1,0 +1,37 @@
+(lp0
+ccopy_reg
+_reconstructor
+p1
+(ceasywebdav.client
+File
+p2
+c__builtin__
+tuple
+p3
+(S'/dav/python/vpn.tar.gz'
+p4
+I6075011
+S'Tue, 07 Feb 2017 14:06:53 GMT'
+p5
+S''
+p6
+S'application/octet-stream'
+p7
+tp8
+tp9
+Rp10
+ag1
+(g2
+g3
+(S'/dav/python/%e5%bc%a0%e5%93%b2-%e6%88%90%e9%83%bd-python.pdf'
+p11
+I71294
+S'Wed, 28 Dec 2016 02:01:45 GMT'
+p12
+g6
+S'application/pdf'
+p13
+tp14
+tp15
+Rp16
+a.

@@ -24,5 +24,10 @@ class GrammarTestCase(unittest.TestCase):
         upload = root.children[0]
         self.assertEqual(upload.expr_name, 'upload')
 
+    def test_parse_help(self):
+        text = 'help'
+        root = grammar.parse(text)
+
+
 if __name__ == '__main__':
     unittest.main()

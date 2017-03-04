@@ -14,15 +14,17 @@ try:
 except ImportError:
     ifilter = filter
 
-logging.basicConfig(level=logging.DEBUG)
-logging.getLogger('requests').setLevel(logging.WARNING)
-logging.getLogger("urllib3").setLevel(logging.WARNING)
-log = logging.getLogger('webdav')
+from client.file import FileTable
 
 try:
     import easywebdav
 except ImportError:
     sys.exit('Easywebdav required, try: pip install easywebdav')
+
+logging.basicConfig(level=logging.DEBUG)
+logging.getLogger('requests').setLevel(logging.WARNING)
+logging.getLogger("urllib3").setLevel(logging.WARNING)
+log = logging.getLogger('webdav')
 
 
 def join(base, path, **kwargs):
@@ -74,15 +76,9 @@ class NutStoreClient(object):
         return local_path
 
     def formatted_ls(self):
-        def flat(max_width):
-            def _flat(f):
-                return '{name: <{width}} {time: <{width}}'\
-                    .format(name=p.basename(f.name), time=f.mtime, width=max_width)
-            return _flat
-
-        files = self.ls()
-        col_width = max(len(f.name) for f in files) + 2
-        return map(flat(col_width), files)
+        table = FileTable(self.ls())
+        table.sort(key=lambda f: f.mtime)
+        return table.get_display()
 
     def ls(self):
         return self._client.ls(self._working_dir)
@@ -127,4 +123,3 @@ class NutStoreClient(object):
     def download_latest_file(self):
         filename = self.search_latest('')
         return self.download(filename)
-

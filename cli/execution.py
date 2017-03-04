@@ -7,11 +7,11 @@ from parsimonious.nodes import NodeVisitor
 grammar = Grammar(r"""
     command     = cd / ls / exit / help / download / upload / rm
 
-    rm      = "rm" _ string
+    rm          = "rm" _ string
     upload      = "upload" _ string
     download    = "download" _ string _ (string)?
-    help        = "h" / "help" / "?" / "usage"
-    exit        = "exit"
+    help        = "help" / "h" / "?"
+    exit        = "exit" / "quit" / "q"
     ls          = "ls" / "ll"
     cd          = _ "cd" _ string _
 
@@ -24,7 +24,7 @@ grammar = Grammar(r"""
 class ExecutionVisitor(NodeVisitor):
     def __init__(self, context):
         """
-        :type context: nuts.Context
+        :type context: cli.Context
         """
         super(ExecutionVisitor, self).__init__()
 
@@ -39,8 +39,7 @@ class ExecutionVisitor(NodeVisitor):
         self.context.should_exit = True
 
     def visit_ls(self, node, children):
-        files = self.context.client.formatted_ls()
-        self.output.write('\n'.join(files))
+        self.output.write(self.context.client.formatted_ls())
 
     def visit_download(self, node, children):
         cloud_path = children[2].text
@@ -56,14 +55,9 @@ class ExecutionVisitor(NodeVisitor):
         self.context.client.rm(cloud_path)
 
     def visit_help(self, node, children):
-        self.output.write("""
-        - cd {dir}
-        - upload {local_path} {cloud_dir}
-        - download {cloud_file} {local_path}
-        - mkdir {cloud_dir}
-        - rm {cloud_file}
-        - exit
-        """)
+        commands = [attr.lstrip('visit_') for attr in dir(self) if attr.startswith('visit_')]
+        commands.sort()
+        self.output.write('\n'.join(commands))
 
     def generic_visit(self, node, children):
         if (not node.expr_name) and node.children:
