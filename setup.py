@@ -43,7 +43,8 @@ setuptools.setup(
     description='A command-line interface for NutStore based on WebDAV.',
     classifiers=[s.strip() for s in classes.split('\n') if s],
     install_requires=get_requirements(),
-    dependency_links=['git+https://github.com/Kxrr/easywebdav.git#egg=easywebdav-1.2.1', ],  # TODO: not working
+    include_package_data=True,
+    dependency_links=['git+https://github.com/Kxrr/easywebdav.git#egg=easywebdav-1.2.2', ],
     entry_points={
         'console_scripts': [
             'nutstore-cli = nutstore_cli.__main__:main',

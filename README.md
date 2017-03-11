@@ -7,8 +7,7 @@ Inspired by [http-prompt](https://github.com/eliangcs/http-prompt).
 ## Run
 
 ```
-$ pip install -e git+https://github.com/Kxrr/easywebdav.git#egg=easywebdav-1.2.1
-$ pip install nutstore-cli
+$ pip install nutstore-cli --process-dependency-links --allow-all-external
 $ nutstore-cli
 ```
 

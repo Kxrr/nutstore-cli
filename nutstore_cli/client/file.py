@@ -2,6 +2,8 @@
 from os import path as p
 from dateutil.parser import parse as dt_parse
 
+from ..utils import tabulate
+
 
 class PFile(object):
     def __init__(self, f):
@@ -40,14 +42,11 @@ class FileTable(object):
         """
         self.display_attrs = attrs
 
-    def get_format(self, extra_width):
-        max_width = max([len(str(getattr(f, attr))) for attr in self.display_attrs for f in self.files]) + extra_width
-        line_fmt = '{0._attr: <_width} '.replace('_width', str(max_width))
-        fmt = ''
-        for attr in self.display_attrs:
-            fmt += line_fmt.replace('_attr', attr)
-        return fmt
-
-    def get_display(self, sep='\n', extra_with=2):
-        fmt = self.get_format(extra_width=extra_with)
-        return sep.join(map(fmt.format, self.files))
+    def get_listing_columns(self, sep='-', extra_with=2):
+        data = [self.display_attrs[:], ]
+        for f in self.files:
+            data.append([getattr(f, attr) for attr in self.display_attrs])
+        strings, sizes = tabulate(data)
+        if len(data) > 0:
+            strings.insert(1, " ".join(map(lambda x: sep * x, sizes)))
+        return '\n'.join(strings)

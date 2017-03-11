@@ -125,4 +125,4 @@ class NutStoreClient(BaseNutStoreClient):
     def formatted_ls(self):
         table = FileTable(self.ls())
         table.sort(key=lambda f: f.mtime)
-        return table.get_display()
+        return table.get_listing_columns()

@@ -13,7 +13,7 @@ class FileTestCase(unittest.TestCase):
 
     def test_table_display(self):
         table = FileTable(self.files)
-        print(table.get_display())
+        print(table.get_listing_columns())
 
 
 if __name__ == '__main__':
