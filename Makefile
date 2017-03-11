@@ -10,4 +10,7 @@ install-from-source:
 execute:
 	nutstore-cli
 
-test-install: clean bdist install-from-source execute
+create-test-venv:
+	virtualenv test_venv
+
+test-install: clean bdist create-test-venv install-from-source execute
