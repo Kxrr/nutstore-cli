@@ -122,7 +122,7 @@ class NutStoreClient(BaseNutStoreClient):
         filename = self.search_latest('')
         return self.download(filename)
 
-    def formatted_ls(self):
+    def formatted_ls(self, filter_str=''):
         table = FileTable(self.ls())
         table.sort(key=lambda f: f.mtime)
-        return table.get_listing_columns()
+        return table.get_listing_columns(filter_str=filter_str)

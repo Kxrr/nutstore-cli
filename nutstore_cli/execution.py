@@ -14,22 +14,25 @@ grammar = Grammar(r"""
     download    = "download" _ string _ (string)?
     help        = "help" / "h" / "?"
     exit        = "exit" / "quit" / "q"
-    ls          = "ls" / "ll"
+    ls          = ("ls" / "ll") (grep)?
     cd          = _ "cd" _ string _
+    
+    grep        = pipe "grep" _ ex_string
+    pipe        = _ "|" _
 
-    string      = char*
+    ex_string   = string / "*" / "-" / "_" / "."
+    string      = char+
     char        = ~r"[^\s'\\]"
     _           = ~r"\s*"
 """)
 
 
 class ExecutionVisitor(NodeVisitor):
-
-    unwrapped_exceptions = (WebdavException, )
+    unwrapped_exceptions = (WebdavException,)
 
     def __init__(self, context):
         """
-        :type context: cli.Context
+        :type context: nutstore_cli.cli.Context
         """
         super(ExecutionVisitor, self).__init__()
 
@@ -44,7 +47,8 @@ class ExecutionVisitor(NodeVisitor):
         self.context.should_exit = True
 
     def visit_ls(self, node, children):
-        self.output.write(self.context.client.formatted_ls())
+        filter_str = children[1].children[3].text if children[1].children else ''
+        self.output.write(self.context.client.formatted_ls(filter_str=filter_str))
 
     def visit_download(self, node, children):
         cloud_path = children[2].text

@@ -24,9 +24,16 @@ class GrammarTestCase(unittest.TestCase):
         upload = root.children[0]
         self.assertEqual(upload.expr_name, 'upload')
 
+    def test_parse_ls(self):
+        for text in (
+                'ls',
+                'ls  | grep something',
+        ):
+            root = grammar.parse(text)
+
     def test_parse_help(self):
         text = 'help'
-        root = grammar.parse(text)
+        grammar.parse(text)
 
 
 if __name__ == '__main__':

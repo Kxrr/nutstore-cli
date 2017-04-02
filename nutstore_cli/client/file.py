@@ -42,10 +42,13 @@ class FileTable(object):
         """
         self.display_attrs = attrs
 
-    def get_listing_columns(self, sep='-', extra_with=2):
+    def get_listing_columns(self, sep='-', extra_with=2, filter_str=''):
         data = [self.display_attrs[:], ]
         for f in self.files:
-            data.append([getattr(f, attr) for attr in self.display_attrs])
+            line = [getattr(f, attr) for attr in self.display_attrs]
+            if filter_str and filter_str not in ' '.join(line):
+                continue
+            data.append(line)
         strings, sizes = tabulate(data)
         if len(data) > 0:
             strings.insert(1, " ".join(map(lambda x: sep * x, sizes)))
