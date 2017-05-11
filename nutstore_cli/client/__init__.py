@@ -101,8 +101,8 @@ class BaseNutStoreClient(object):
         )
 
     def to_cloud_path(self, path):
-        if not path.startswith('dav'):
-            return 'dav' + join(self.working_dir, path)
+        if not re.search('^/?dav.*', path):
+            return '/dav' + join(self.working_dir, path)
         return path
 
     def check_conn(self):
