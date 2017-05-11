@@ -1,6 +1,6 @@
+git+https://github.com/Kxrr/easywebdav.git#egg=easywebdav-1.2.2
 six==1.10.0
 parsimonious==0.7.0
 python-dateutil==2.6.0
 click==6.7
 prompt-toolkit==1.0.9
--e git+https://github.com/Kxrr/easywebdav.git#egg=easywebdav-1.2.2

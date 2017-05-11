@@ -1,0 +1,14 @@
+CHANGES
+=======
+
+* Using pbr to pack
+* Grep supporting
+* Bump version to 0.1.0
+* Use \`tabulate\` to output columns
+* Add setup.py
+* Ship to python3
+* Handle some exceptions
+* Display ls command by FileTable
+* Change directory switch strategy
+* Clean \`prompt\_toolkit\`
+* First blood
