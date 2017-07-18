@@ -7,9 +7,6 @@ bdist:
 install-from-source:
 	pip install `find dist | grep tar\.gz` --process-dependency-links
 
-execute:
-	nutstore-cli
-
 create-test-venv:
 	virtualenv test_venv
 

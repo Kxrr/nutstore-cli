@@ -22,7 +22,6 @@ def get_requirements():
 
 setuptools.setup(
     packages=setuptools.find_packages(exclude=['tests', 'tests.*']),
-
     setup_requires=['pbr'],
     pbr=True,
 )

@@ -5,7 +5,28 @@ from parsimonious.grammar import Grammar
 from parsimonious.nodes import NodeVisitor
 
 from nutstore_cli.client.exceptions import WebdavException
+from nutstore_cli.utils import info
 
+HELP = """
+
+ls: list remote file in working directory
+    $ ls 
+    $ ls | grep {keyword}
+
+cd: change working directory
+    $ cd {absolute_remote_path}
+    $ cd {relative_remote_path}
+
+rm:
+    $ rm {remote_file_name}
+
+upload: upload local file to remote 
+    $ upload {local_file_path}
+
+download: download remote file to a temp local path 
+    $ download {remote_file_name}
+
+"""
 grammar = Grammar(r"""
     command     = cd / ls / exit / help / download / upload / rm
 
@@ -65,9 +86,7 @@ class ExecutionVisitor(NodeVisitor):
             self.context.client.rm(cloud_path)
 
     def visit_help(self, node, children):
-        commands = [attr.lstrip('visit_') for attr in dir(self) if attr.startswith('visit_')]
-        commands.sort()
-        self.output.write('\n'.join(commands))
+        info(HELP)
 
     def generic_visit(self, node, children):
         if (not node.expr_name) and node.children:

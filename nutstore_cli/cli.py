@@ -1,9 +1,6 @@
 # coding: utf-8
 from __future__ import absolute_import
 
-import sys
-from os import getenv
-
 import click
 from prompt_toolkit import prompt
 from prompt_toolkit.auto_suggest import AutoSuggestFromHistory
@@ -12,25 +9,33 @@ from prompt_toolkit.history import InMemoryHistory
 from nutstore_cli.client import NutStoreClient
 from nutstore_cli.context import Context
 from nutstore_cli.execution import execute
+from nutstore_cli.utils import info, error, to_file
 
 
 @click.command()
-@click.argument('username', default=getenv('NUTSTORE_USERNAME'))
-@click.argument('key', default=getenv('NUTSTORE_KEY'))
-@click.argument('working_dir', default=getenv('NUTSTORE_WORKINGDIR'))
+@click.option('--username', prompt='Username', help='Example: i@example.com')
+@click.option('--key', prompt='App Key', help='Example: a2mqieixzkm5t5h4', hide_input=True)
+@click.option('--working_dir', prompt='Working Dir', help='Example: /photos')
 def cli(username, key, working_dir):
-    click.secho('NutStore Command Line Interface.\n{}\n'.format(sys.version))
-    if not all([username, key, working_dir]):
-        click.secho('Please login.', fg='cyan')
-    if not username:
-        username = click.prompt('username')
-    if not key:
-        key = click.prompt('key', hide_input=True)
-    if not working_dir:
-        working_dir = click.prompt('working dir')
+    """
+    NutStore Command Line Interface (0.1.3)
 
-    # TODO: if retry after login failed(pdb?)
-    client = NutStoreClient(username=username, password=key, working_dir=working_dir, check_conn=True)
+    NutStore WebDAV Settings: https://www.jianguoyun.com/d/account#safe
+
+    Project Page: https://github.com/Kxrr/nutstore-cli
+    """
+    client = NutStoreClient(username=username, password=key, working_dir=working_dir, check_conn=False)
+    try:
+        client.check_conn()
+    except Exception as e:
+        import traceback
+        error("""Login failed, detail: {0}
+        Usage: nutstore-cli --help
+        """.format(to_file(traceback.format_exc())))
+        import sys
+        sys.exit(-1)
+    info('Hello, {}'.format(username))
+    info('Type "help" to see supported commands.')
     context = Context(client=client)
     history = InMemoryHistory()
     while True:
@@ -46,5 +51,8 @@ def cli(username, key, working_dir):
             execute(text, context)
             if context.should_exit:
                 break
+    info('Goodbye.')
 
-    click.echo('Goodbye.')
+
+if __name__ == '__main__':
+    cli()
