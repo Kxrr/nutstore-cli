@@ -13,6 +13,5 @@ RUN apt-get update \
     build-essential \
     python-dev
 
-RUN alias pypiTest='pip -i https://test.pypi.org/legacy/ '
 RUN mkdir /dist
 WORKDIR /dist

@@ -29,9 +29,8 @@ def cli(username, key, working_dir):
         client.check_conn()
     except Exception as e:
         import traceback
-        error("""Login failed, detail: {0}
-        Usage: nutstore-cli --help
-        """.format(to_file(traceback.format_exc())))
+        error('Login failed, detail: {0}\n'
+              'Usage: nutstore-cli --help'.format(to_file(traceback.format_exc())))
         import sys
         sys.exit(-1)
     info('Hello, {}'.format(username))
