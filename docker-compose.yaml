@@ -1,0 +1,10 @@
+version: '2'
+
+services:
+  testenv:
+    command: bash
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    volumes:
+      - ./dist:/dist
