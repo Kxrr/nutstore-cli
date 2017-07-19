@@ -1,15 +1,21 @@
 clean:
 	rm -rf dist/ build/ nutstore_cli.egg-info/ test_venv/
 
-bdist:
+_bdist:
 	python setup.py build sdist bdist_wheel bdist_egg
+
+bdist: clean _bdist
 
 testenv:
 	docker-compose run testenv
 
-testinstall-local:
-	docker-compose run testenv bash -c 'cd /dist && pip install `find . | grep 'tar.gz' | grep -v macos` --process-dependency-links && bash'
+_testInstallLocal:
+	docker-compose run testenv bash -c 'cd /dist && pip install `find . | grep 'tar.gz' | grep -v macos` && bash'
 
+testInstallLocal: clean _bdist _testInstallLocal
 
+testInstallFromTestPypi:
+	docker-compose run testenv bash -c 'pip install nutstore-cli -i https://testpypi.python.org/pypi'
 
-test-install: clean bdist create-test-venv install-from-source execute
+releaseToTestPypi:
+	python setup.py bdist_wheel upload -r testpypi

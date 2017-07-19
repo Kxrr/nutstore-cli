@@ -1,7 +1,8 @@
 *.pyc
 .DS_Store
-
 .env
+
+.eggs
 .idea
 venv
 dist

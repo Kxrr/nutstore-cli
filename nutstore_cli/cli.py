@@ -18,7 +18,7 @@ from nutstore_cli.utils import info, error, to_file
 @click.option('--working_dir', prompt='Working Dir', help='Example: /photos')
 def cli(username, key, working_dir):
     """
-    NutStore Command Line Interface (0.1.3)
+    NutStore Command Line Interface (0.2.0)
 
     NutStore WebDAV Settings: https://www.jianguoyun.com/d/account#safe
 

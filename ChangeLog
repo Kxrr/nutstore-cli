@@ -1,6 +1,10 @@
 CHANGES
 =======
 
+0.2.0
+-----
+
+* Fallback to python2.7 due to \`process-dependency-links\` had  be deprecated
 * Update docs
 * Fix error path
 * Using pbr to pack
