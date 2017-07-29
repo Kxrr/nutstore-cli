@@ -1,6 +1,7 @@
 # coding: utf-8
 from __future__ import absolute_import
 
+import os
 import click
 import textwrap
 from prompt_toolkit import prompt
@@ -16,7 +17,7 @@ from nutstore_cli.utils import to_file, echo
 
 def cli(username, key, working_dir):
     """
-    NutStore Command Line Interface (0.3.2)
+    NutStore Command Line Interface (0.3.3)
 
     NutStore WebDAV Settings: https://www.jianguoyun.com/d/account#safe
 
@@ -52,10 +53,17 @@ def cli(username, key, working_dir):
     echo.info('Goodbye.')
 
 
+def get_env(key, prefix='NUTSTORE_'):
+    def wrapper(*args, **kwargs):
+        return os.environ.get('{0}{1}'.format(prefix, key.upper()), '')
+
+    return wrapper
+
+
 @click.command(help=textwrap.dedent(cli.__doc__))
-@click.option('--username', prompt='Username', help='Example: i@example.com')
-@click.option('--key', prompt='App Key', help='Example: a2mqieixzkm5t5h4', hide_input=True)
-@click.option('--working_dir', prompt='Working Dir', help='Example: /photos')
+@click.option('--username', prompt='Username', default=get_env('USERNAME'), help='Example: i@example.com')
+@click.option('--key', prompt='App Key', default=get_env('KEY'), help='Example: a2mqieixzkm5t5h4', hide_input=True)
+@click.option('--working_dir', prompt='Working Dir', default=get_env('WORKING_DIR'), help='Example: /photos')
 def launch_cli(*args, **kwargs):
     return cli(*args, **kwargs)
 

@@ -2,6 +2,6 @@
 import logging
 
 __author__ = 'Kxrr <hi@kxrr.us>'
-__version__ = '0.3.2'
+__version__ = '0.3.3'
 
 logging.getLogger('webdav').setLevel(logging.WARNING)
