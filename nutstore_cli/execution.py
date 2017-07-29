@@ -11,30 +11,8 @@ from parsimonious.grammar import Grammar
 from parsimonious.nodes import NodeVisitor
 
 from nutstore_cli.utils import output
+from nutstore_cli.help import help_table
 from nutstore_cli.client.exceptions import WebdavException
-
-HELP = """
-cd: Change working directory
-    $ cd {absolute_remote_path}
-    $ cd {relative_remote_path}
-
-download: Download remote file to a temp local path 
-    $ download {remote_file_name}
-    
-exit: Exit the interface
-
-help: Show help 
-
-ls: List remote file in working directory
-    $ ls 
-    $ ls | grep {keyword}
-    
-rm: Remove remote file
-    $ rm {remote_file_name}
-
-upload: Upload local file to remote 
-    $ upload {local_file_path}
-"""
 
 COMMANDS = ['cd', 'download', 'exit', 'grep', 'help', 'ls', 'rm', 'upload']
 
@@ -113,7 +91,7 @@ class ExecutionVisitor(NodeVisitor):
             self.context.client.rm(cloud_path)
 
     def visit_help(self, node, children):
-        output.info(HELP)
+        output.info(help_table)
 
     def generic_visit(self, node, children):
         if (not node.expr_name) and node.children:
@@ -132,6 +110,7 @@ def execute(command, context):
         root = grammar.parse(command)
     except ParseError:
         output.error('Invalid command {0}.'.format(repr(command)))
+        output.info('Type "help" to see supported commands.')
         return
 
     try:

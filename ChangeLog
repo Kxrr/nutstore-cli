@@ -1,6 +1,12 @@
 CHANGES
 =======
 
+* Introduce tabulate library
+
+0.2.2
+-----
+
+* Add completer for commands
 * Add README.rst
 
 0.2.1
