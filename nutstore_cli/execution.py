@@ -1,12 +1,17 @@
 # encoding: utf-8
 import re
+from os import path
+from itertools import ifilter
+
 import click
+import tabulate
+from dateutil.parser import parse as dt_parse
 from parsimonious import ParseError
 from parsimonious.grammar import Grammar
 from parsimonious.nodes import NodeVisitor
 
+from nutstore_cli.utils import output
 from nutstore_cli.client.exceptions import WebdavException
-from nutstore_cli.utils import info
 
 HELP = """
 cd: Change working directory
@@ -56,6 +61,14 @@ RULES = r"""
 
 grammar = Grammar(RULES)
 
+ATTRS = (
+    lambda f: path.basename(f.name),
+    'size',
+    lambda f: dt_parse(f.mtime).strftime('%Y-%m-%d %H:%M')
+)
+
+LABELS = ('Filename', 'Size', 'Modify Time')
+
 
 class ExecutionVisitor(NodeVisitor):
     unwrapped_exceptions = (WebdavException,)
@@ -67,7 +80,6 @@ class ExecutionVisitor(NodeVisitor):
         super(ExecutionVisitor, self).__init__()
 
         self.context = context
-        self.output = Output()
 
     def visit_cd(self, node, children):
         path = children[3].text
@@ -77,8 +89,14 @@ class ExecutionVisitor(NodeVisitor):
         self.context.should_exit = True
 
     def visit_ls(self, node, children):
-        filter_str = children[1].children[3].text if children[1].children else ''
-        self.output.write(self.context.client.formatted_ls(filter_str=filter_str))
+        labels, rows = self.context.client.list(ATTRS, LABELS)
+        name_filter = children[1].children[3].text if children[1].children else ''
+        rows = ifilter(lambda row: bool(row[0]), rows)
+        if name_filter:
+            rows = ifilter(lambda row: re.search(name_filter, row[0], flags=re.IGNORECASE), rows)
+        rows = list(rows)
+        rows.sort(key=lambda row: row[2])  # order by mtime
+        output.info(tabulate.tabulate(rows, headers=labels))
 
     def visit_download(self, node, children):
         cloud_path = children[2].text
@@ -95,7 +113,7 @@ class ExecutionVisitor(NodeVisitor):
             self.context.client.rm(cloud_path)
 
     def visit_help(self, node, children):
-        info(HELP)
+        output.info(HELP)
 
     def generic_visit(self, node, children):
         if (not node.expr_name) and node.children:
@@ -105,24 +123,18 @@ class ExecutionVisitor(NodeVisitor):
         return node
 
 
-class Output(object):
-    def write(self, data):
-        return click.secho(data, fg='green')
-
-
 def execute(command, context):
     if not command.strip():
-        click.secho('Empty command.'.format(command), fg='red')
         return
 
     visitor = ExecutionVisitor(context)
     try:
         root = grammar.parse(command)
     except ParseError:
-        click.secho('Invalid command <{0}>.'.format(command), fg='red')
+        output.error('Invalid command {0}.'.format(repr(command)))
         return
 
     try:
         visitor.visit(root)
     except WebdavException as e:
-        click.secho(str(e), fg='red')
+        output.error(str(e))

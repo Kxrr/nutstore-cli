@@ -1,6 +1,7 @@
 *.pyc
 .DS_Store
 .env*
+demo.py
 bumpversion
 Makefile
 
