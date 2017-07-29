@@ -1,6 +1,10 @@
 CHANGES
 =======
 
+0.3.0
+-----
+
+* Beautify command help
 * Introduce tabulate library
 
 0.2.2
