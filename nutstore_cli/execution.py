@@ -10,11 +10,11 @@ from parsimonious import ParseError
 from parsimonious.grammar import Grammar
 from parsimonious.nodes import NodeVisitor
 
-from nutstore_cli.utils import output
+from nutstore_cli.utils import echo
 from nutstore_cli.command_help import help_table
 from nutstore_cli.client.exceptions import WebdavException
 
-COMMANDS = ['cd', 'download', 'exit', 'grep', 'help', 'ls', 'rm', 'upload']
+COMMANDS = ['cd', 'download', 'exit', 'grep', 'help', 'ls', 'll', 'rm', 'upload']
 
 RULES = r"""
     command     = cd / ls / exit / help / download / upload / rm
@@ -74,16 +74,18 @@ class ExecutionVisitor(NodeVisitor):
             rows = ifilter(lambda row: re.search(name_filter, row[0], flags=re.IGNORECASE), rows)
         rows = list(rows)
         rows.sort(key=lambda row: row[2])  # order by mtime
-        output.info(tabulate.tabulate(rows, headers=labels))
+        echo.echo(tabulate.tabulate(rows, headers=labels))
 
     def visit_download(self, node, children):
         cloud_path = children[2].text
         store_path = children[4].text if len(node.children) == 5 else None
-        self.context.client.download(cloud_path, store_path)
+        dest = self.context.client.download(cloud_path, store_path)
+        echo.echo(dest)
 
     def visit_upload(self, node, children):
         local_path = children[2].text
-        self.context.client.upload(local_path)
+        remote_path = self.context.client.upload(local_path)
+        echo.echo(remote_path)
 
     def visit_rm(self, node, children):
         cloud_path = children[2].text
@@ -91,7 +93,7 @@ class ExecutionVisitor(NodeVisitor):
             self.context.client.rm(cloud_path)
 
     def visit_help(self, node, children):
-        output.info(help_table)
+        echo.info(help_table)
 
     def generic_visit(self, node, children):
         if (not node.expr_name) and node.children:
@@ -109,11 +111,11 @@ def execute(command, context):
     try:
         root = grammar.parse(command)
     except ParseError:
-        output.error('Invalid command {0}.'.format(repr(command)))
-        output.info('Type "help" to see supported commands.')
+        echo.error('Invalid command "{0}".'.format(command))
+        echo.info('Type "help" to see supported commands.')
         return
 
     try:
         visitor.visit(root)
     except WebdavException as e:
-        output.error(str(e))
+        echo.error(str(e))

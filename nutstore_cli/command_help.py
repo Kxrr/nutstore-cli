@@ -21,12 +21,12 @@ def add_help(command, description, examples=None):
 add_help(
     'cd',
     'change working directory',
-    ['cd {absolute_remote_path}', 'cd {relative_remote_path}']
+    ['cd {absolute_remote_path}', 'cd {remote_path}']
 )
 
 add_help(
     'download',
-    'download remote file to a temp local path ',
+    'download a remote file to the local temp path ',
     ['download {remote_file_name}'],
 )
 
@@ -44,19 +44,19 @@ add_help(
 
 add_help(
     'ls',
-    'list remote file in working directory',
+    'list remote files in working directory',
     ['ls', 'ls | grep {keyword}']
 )
 
 add_help(
     'rm',
-    'delete remote file',
+    'delete a remote file',
     ['rm {remote_file_name}']
 )
 
 add_help(
     'upload',
-    'upload local file to remote ',
+    'upload a local file to remote ',
     ['upload {local_file_path}']
 )
 

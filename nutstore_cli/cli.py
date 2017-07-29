@@ -11,12 +11,12 @@ from nutstore_cli.client.client import NutStoreClient
 from nutstore_cli.context import Context
 from nutstore_cli.completer import completer
 from nutstore_cli.execution import execute
-from nutstore_cli.utils import info, error, to_file
+from nutstore_cli.utils import to_file, echo
 
 
 def cli(username, key, working_dir):
     """
-    NutStore Command Line Interface (0.3.1)
+    NutStore Command Line Interface (0.3.2)
 
     NutStore WebDAV Settings: https://www.jianguoyun.com/d/account#safe
 
@@ -27,12 +27,12 @@ def cli(username, key, working_dir):
         client.check_conn()
     except Exception as e:
         import traceback
-        error('Login failed, detail: {0}\n'
-              'Usage: nutstore-cli --help'.format(to_file(traceback.format_exc())))
+        echo.error('Login failed, detail: {0}\n'
+                   'Usage: nutstore-cli --help'.format(to_file(traceback.format_exc())))
         import sys
         sys.exit(-1)
-    info('Hello, {}'.format(username))
-    info('Type "help" to see supported commands.')
+    echo.info('Hello, {}'.format(username))
+    echo.info('Type "help" to see supported commands.')
     context = Context(client=client)
     history = InMemoryHistory()
     while True:
@@ -49,7 +49,7 @@ def cli(username, key, working_dir):
             execute(text, context)
             if context.should_exit:
                 break
-    info('Goodbye.')
+    echo.info('Goodbye.')
 
 
 @click.command(help=textwrap.dedent(cli.__doc__))

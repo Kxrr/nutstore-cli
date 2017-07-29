@@ -1,19 +1,8 @@
 # coding: utf-8
 import inspect
 import os
-from urlparse import urljoin
 
 from nutstore_cli.client.exceptions import FileNotExistException
-
-
-def dir_join(base, path, **kwargs):
-    """Copied from http-prompt/http_prompt/execution.py"""
-    if not base.endswith('/'):
-        base += '/'
-    url = urljoin(base, path, **kwargs)
-    if url.endswith('/') and not path.endswith('/'):
-        url = url[:-1]
-    return url
 
 
 def get_attr(obj, attr_or_fn):
