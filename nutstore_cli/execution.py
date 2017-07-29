@@ -1,4 +1,5 @@
 # encoding: utf-8
+import re
 import click
 from parsimonious import ParseError
 from parsimonious.grammar import Grammar
@@ -8,26 +9,31 @@ from nutstore_cli.client.exceptions import WebdavException
 from nutstore_cli.utils import info
 
 HELP = """
-
-ls: list remote file in working directory
-    $ ls 
-    $ ls | grep {keyword}
-
-cd: change working directory
+cd: Change working directory
     $ cd {absolute_remote_path}
     $ cd {relative_remote_path}
 
-rm:
+download: Download remote file to a temp local path 
+    $ download {remote_file_name}
+    
+exit: Exit the interface
+
+help: Show help 
+
+ls: List remote file in working directory
+    $ ls 
+    $ ls | grep {keyword}
+    
+rm: Remove remote file
     $ rm {remote_file_name}
 
-upload: upload local file to remote 
+upload: Upload local file to remote 
     $ upload {local_file_path}
-
-download: download remote file to a temp local path 
-    $ download {remote_file_name}
-
 """
-grammar = Grammar(r"""
+
+COMMANDS = ['cd', 'download', 'exit', 'grep', 'help', 'ls', 'rm', 'upload']
+
+RULES = r"""
     command     = cd / ls / exit / help / download / upload / rm
 
     rm          = "rm" _ string
@@ -39,13 +45,16 @@ grammar = Grammar(r"""
     cd          = _ "cd" _ string _
     
     grep        = pipe "grep" _ ex_string
+    
     pipe        = _ "|" _
 
     ex_string   = string / "*" / "-" / "_" / "."
     string      = char+
     char        = ~r"[^\s'\\]"
     _           = ~r"\s*"
-""")
+"""
+
+grammar = Grammar(RULES)
 
 
 class ExecutionVisitor(NodeVisitor):

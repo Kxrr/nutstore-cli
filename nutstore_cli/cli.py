@@ -8,6 +8,7 @@ from prompt_toolkit.history import InMemoryHistory
 
 from nutstore_cli.client import NutStoreClient
 from nutstore_cli.context import Context
+from nutstore_cli.completer import completer
 from nutstore_cli.execution import execute
 from nutstore_cli.utils import info, error, to_file
 
@@ -18,7 +19,7 @@ from nutstore_cli.utils import info, error, to_file
 @click.option('--working_dir', prompt='Working Dir', help='Example: /photos')
 def cli(username, key, working_dir):
     """
-    NutStore Command Line Interface (0.2.1)
+    NutStore Command Line Interface (0.2.2)
 
     NutStore WebDAV Settings: https://www.jianguoyun.com/d/account#safe
 
@@ -41,6 +42,7 @@ def cli(username, key, working_dir):
         try:
             text = prompt(
                 message=u'[{path}] > '.format(path=context.path),
+                completer=completer,
                 history=history,
                 auto_suggest=AutoSuggestFromHistory(),
             )

@@ -7,7 +7,7 @@ NutStore CLI
 
 A command-line interface for `NutStore`_ based on WebDAV.
 
-Inspired by `http-prompt`_
+Inspired by `http-prompt`_.
 
 |SCREENSHOT|
 

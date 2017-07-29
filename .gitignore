@@ -1,7 +1,10 @@
 *.pyc
 .DS_Store
-.env
+.env*
+bumpversion
+Makefile
 
+*egg-info
 .eggs
 .idea
 venv
