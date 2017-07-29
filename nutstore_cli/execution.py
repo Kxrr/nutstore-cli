@@ -11,7 +11,7 @@ from parsimonious.grammar import Grammar
 from parsimonious.nodes import NodeVisitor
 
 from nutstore_cli.utils import output
-from nutstore_cli.help import help_table
+from nutstore_cli.command_help import help_table
 from nutstore_cli.client.exceptions import WebdavException
 
 COMMANDS = ['cd', 'download', 'exit', 'grep', 'help', 'ls', 'rm', 'upload']
