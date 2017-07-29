@@ -9,7 +9,12 @@ A command-line interface for `NutStore`_ based on WebDAV.
 
 Inspired by `http-prompt`_.
 
-|SCREENSHOT|
+
+Screenshot
+-----------
+
+`screenshot`_
+
 
 Install
 -------
@@ -21,14 +26,24 @@ Install
     $ pip install nutstore-cli
 
 Usage
---------
+-----
 
 .. code::
 
     $ nutstore-cli --help
 
+Environment Variable
+^^^^^^^^^^^^^^^^^^^^
+
+* NUTSTORE_USERNAME
+* NUTSTORE_KEY
+* NUTSTORE_WORKING_DIR
+
+QA
+--
+
 How to setup WebDAV on NutStore
--------------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 https://griddiary.uservoice.com/knowledgebase/articles/478287-%E5%9D%9A%E6%9E%9C%E4%BA%91-webdav-%E8%AE%BE%E7%BD%AE%E6%95%99%E7%A8%8B
 
@@ -37,4 +52,5 @@ https://griddiary.uservoice.com/knowledgebase/articles/478287-%E5%9D%9A%E6%9E%9C
 .. |SCREENSHOT| image:: ./docs/sreenshot.png
 .. _NutStore: https://www.jianguoyun.com
 .. _http-prompt: https://github.com/eliangcs/http-prompt
+.. _screenshot: https://asciinema.org/a/T0AwPltSoPZYSYQ7OHQng15rg
 

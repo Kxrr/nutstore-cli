@@ -1,6 +1,9 @@
 CHANGES
 =======
 
+* Hide prompt if has default
+* Read variable from environment
+
 0.3.2
 -----
 

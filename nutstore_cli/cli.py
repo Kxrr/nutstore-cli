@@ -32,7 +32,7 @@ def cli(username, key, working_dir):
                    'Usage: nutstore-cli --help'.format(to_file(traceback.format_exc())))
         import sys
         sys.exit(-1)
-    echo.info('Hello, {}'.format(username))
+    echo.info('Hello.'.format(username))
     echo.info('Type "help" to see supported commands.')
     context = Context(client=client)
     history = InMemoryHistory()
@@ -60,10 +60,45 @@ def get_env(key, prefix='NUTSTORE_'):
     return wrapper
 
 
+class NoPromptIfDefaultOption(click.Option):
+    def prompt_for_value(self, ctx):
+        default = self.get_default(ctx)
+        if default:
+            return default
+        if self.is_bool_flag:
+            return click.confirm(self.prompt)
+        return click.prompt(
+            self.prompt,
+            hide_input=self.hide_input,
+            confirmation_prompt=self.confirmation_prompt,
+            value_proc=lambda x: self.process_value(ctx, x)
+        )
+
+
 @click.command(help=textwrap.dedent(cli.__doc__))
-@click.option('--username', prompt='Username', default=get_env('USERNAME'), help='Example: i@example.com')
-@click.option('--key', prompt='App Key', default=get_env('KEY'), help='Example: a2mqieixzkm5t5h4', hide_input=True)
-@click.option('--working_dir', prompt='Working Dir', default=get_env('WORKING_DIR'), help='Example: /photos')
+@click.option(
+    '--username',
+    prompt='Username',
+    default=get_env('USERNAME'),
+    help='Example: i@example.com',
+    cls=NoPromptIfDefaultOption,
+)
+@click.option(
+    '--key',
+    prompt='App Key',
+    default=get_env('KEY'),
+    help='Example: a2mqieixzkm5t5h4',
+    hide_input=True,
+    cls=NoPromptIfDefaultOption,
+
+)
+@click.option(
+    '--working_dir',
+    prompt='Working Dir',
+    default=get_env('WORKING_DIR'),
+    help='Example: /photos',
+    cls=NoPromptIfDefaultOption,
+)
 def launch_cli(*args, **kwargs):
     return cli(*args, **kwargs)
 
