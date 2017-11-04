@@ -17,9 +17,9 @@ from nutstore_cli.utils import to_file, echo
 
 def cli(username, key, working_dir):
     """
-    NutStore Command Line Interface (0.3.3)
+    NutStore Command Line Interface (0.3.4)
 
-    NutStore WebDAV Settings: https://www.jianguoyun.com/d/account#safe
+    NutStore WebDAV Settings: https://github.com/Kxrr/nutstore-cli/blob/master/docs/tutorial.md
 
     Project Page: https://github.com/Kxrr/nutstore-cli
     """

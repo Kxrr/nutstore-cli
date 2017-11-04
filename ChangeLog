@@ -1,6 +1,14 @@
 CHANGES
 =======
 
+0.3.4
+-----
+
+* Add tutorial doc
+
+0.3.3
+-----
+
 * Hide prompt if has default
 * Read variable from environment
 
