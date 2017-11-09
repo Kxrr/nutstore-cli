@@ -1,6 +1,7 @@
 # coding: utf-8
 from __future__ import absolute_import
 
+import os
 import click
 
 
@@ -14,3 +15,11 @@ def error(s):
 
 def echo(s):
     click.secho(s)
+
+
+_DEBUG = bool(os.getenv('DEBUG', False))
+
+
+def debug(s):
+    if _DEBUG:
+        click.secho('[DEBUG] {}'.format(s), fg='green')

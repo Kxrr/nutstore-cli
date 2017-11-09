@@ -1,7 +1,5 @@
 # coding: utf-8
 from __future__ import absolute_import
-
-import os
 import click
 import textwrap
 from prompt_toolkit import prompt
@@ -13,11 +11,12 @@ from nutstore_cli.context import Context
 from nutstore_cli.completer import completer
 from nutstore_cli.execution import execute
 from nutstore_cli.utils import to_file, echo
+from nutstore_cli.config import get_config
 
 
 def cli(username, key, working_dir):
     """
-    NutStore Command Line Interface (0.3.4)
+    NutStore Command Line Interface (0.3.5)
 
     NutStore WebDAV Settings: https://github.com/Kxrr/nutstore-cli/blob/master/docs/tutorial.md
 
@@ -25,6 +24,7 @@ def cli(username, key, working_dir):
     """
     client = NutStoreClient(username=username, password=key, working_dir=working_dir, check_conn=False)
     try:
+        echo.debug('Try to initial a client by given args')
         client.check_conn()
     except Exception as e:
         import traceback
@@ -32,6 +32,7 @@ def cli(username, key, working_dir):
                    'Usage: nutstore-cli --help'.format(to_file(traceback.format_exc())))
         import sys
         sys.exit(-1)
+    echo.debug('Client setup done')
     echo.info('Hello.'.format(username))
     echo.info('Type "help" to see supported commands.')
     context = Context(client=client)
@@ -53,13 +54,6 @@ def cli(username, key, working_dir):
     echo.info('Goodbye.')
 
 
-def get_env(key, prefix='NUTSTORE_'):
-    def wrapper(*args, **kwargs):
-        return os.environ.get('{0}{1}'.format(prefix, key.upper()), '')
-
-    return wrapper
-
-
 class NoPromptIfDefaultOption(click.Option):
     def prompt_for_value(self, ctx):
         default = self.get_default(ctx)
@@ -79,14 +73,14 @@ class NoPromptIfDefaultOption(click.Option):
 @click.option(
     '--username',
     prompt='Username',
-    default=get_env('USERNAME'),
+    default=get_config('username'),
     help='Example: i@example.com',
     cls=NoPromptIfDefaultOption,
 )
 @click.option(
     '--key',
     prompt='App Key',
-    default=get_env('KEY'),
+    default=get_config('key'),
     help='Example: a2mqieixzkm5t5h4',
     hide_input=True,
     cls=NoPromptIfDefaultOption,
@@ -95,12 +89,12 @@ class NoPromptIfDefaultOption(click.Option):
 @click.option(
     '--working_dir',
     prompt='Working Dir',
-    default=get_env('WORKING_DIR'),
+    default=get_config('working_dir'),
     help='Example: /photos',
     cls=NoPromptIfDefaultOption,
 )
-def launch_cli(*args, **kwargs):
-    return cli(*args, **kwargs)
+def launch_cli(**kwargs):
+    cli(**kwargs)
 
 
 if __name__ == '__main__':
