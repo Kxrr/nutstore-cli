@@ -39,7 +39,7 @@ Usage
     $ nutstore-cli --help
 
 
-CONFIG
+Config
 ------
 
 Config by a config file
@@ -60,10 +60,16 @@ Config by pass args to nutstore-cli
 You can pass args like ``--username=i@example.com`` directly to nutstore-cli
 
 
-DEBUGGING
+Debugging
 ---------
 
-Set the environment variable ``DEBUG`` to ``1`` to see the debug output
+Set the environment variable ``DEBUG`` to ``1`` to print the debug output
+
+
+TODO
+----
+
+See ``TODO.md``
 
 
 .. |PYVERSION| image:: https://img.shields.io/badge/python-2.7-blue.svg
