@@ -1,6 +1,13 @@
 CHANGES
 =======
 
+* Disable default command due to not working appropriately
+
+0.4.0
+-----
+
+* Add upload and download sub commands
+
 0.3.6
 -----
 
