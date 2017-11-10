@@ -16,7 +16,7 @@ from nutstore_cli.config import get_config
 
 def cli(username, key, working_dir):
     """
-    NutStore Command Line Interface (0.3.5)
+    NutStore Command Line Interface (0.3.6)
 
     NutStore WebDAV Settings: https://github.com/Kxrr/nutstore-cli/blob/master/docs/tutorial.md
 

@@ -6,6 +6,7 @@ from itertools import ifilter
 import click
 import tabulate
 from dateutil.parser import parse as dt_parse
+from dateutil import tz
 from parsimonious import ParseError
 from parsimonious.grammar import Grammar
 from parsimonious.nodes import NodeVisitor
@@ -24,12 +25,12 @@ RULES = r"""
     download    = "download" _ string _ (string)?
     help        = "help" / "h" / "?"
     exit        = "exit" / "quit" / "q"
-    ls          = ("ls" / "ll") (grep)?
+    ls          = ("ls" / "ll") _ (grep)?
     cd          = _ "cd" _ string _
     
-    grep        = pipe "grep" _ ex_string
+    grep        = pipe _ "grep" _ ex_string
     
-    pipe        = _ "|" _
+    pipe        = "|"
 
     ex_string   = string / "*" / "-" / "_" / "."
     string      = char+
@@ -42,7 +43,7 @@ grammar = Grammar(RULES)
 LS_ATTRS = (
     lambda f: path.basename(f.name),
     lambda f: humanbytes(int(f.size)),
-    lambda f: dt_parse(f.mtime).strftime('%Y-%m-%d %H:%M')
+    lambda f: dt_parse(f.mtime).astimezone(tz.tzlocal()).strftime('%Y-%m-%d %H:%M:%S')
 )
 
 LS_LABELS = ('Filename', 'Size', 'Modify Time')
@@ -71,10 +72,11 @@ class ExecutionVisitor(NodeVisitor):
             LS_ATTRS,
             LS_LABELS
         )
-        name_filter = children[1].children[3].text if children[1].children else ''
+        grep_keywords = children[2].children[4].children[0].text if children[2].children else None
         rows = ifilter(lambda row: bool(row[0]), rows)
-        if name_filter:
-            rows = ifilter(lambda row: re.search(name_filter, row[0], flags=re.IGNORECASE), rows)
+        if grep_keywords:
+            echo.debug('Issue a grep "{}"'.format(grep_keywords))
+            rows = ifilter(lambda row: re.search(grep_keywords, row[0], flags=re.IGNORECASE), rows)
         rows = list(rows)
         rows.sort(key=lambda row: row[2])  # order by mtime
         echo.echo(tabulate.tabulate(rows, headers=labels))
