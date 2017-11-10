@@ -4,12 +4,11 @@ import tempfile
 import logging
 from contextlib import contextmanager
 
+from nutstore_cli.utils import echo
 from nutstore_cli.client.utils import check_local_path
-from nutstore_cli.client.road import *
+from nutstore_cli.client.path_helper import *
 
 import easywebdav
-
-log = logging.getLogger('webdav')
 
 
 class BaseNutStoreClient(object):
@@ -18,17 +17,17 @@ class BaseNutStoreClient(object):
     api = 'dav.jianguoyun.com'
 
     def __init__(self, username, password, working_dir, check_conn=True):
-        self.np = NutPath()
-        self.cd('/' + working_dir.split('/', 1)[-1])
+        if not working_dir.startswith('/'):
+            working_dir = '/' + working_dir
+        self.np = PathHelper(start=working_dir)
         self._client = easywebdav.connect(self.api, username=username, password=password)
-
         if check_conn:
             self.check_conn()
 
     @property
     def cwd(self):
         """Current working directory for display"""
-        return self.np.dummy_path
+        return self.np.pretty
 
     @check_local_path
     def upload(self, local_path, remote_dir=None):
@@ -36,32 +35,38 @@ class BaseNutStoreClient(object):
         name = basename(local_path)
         directory = remote_dir or self.cwd
         remote_path = join(directory, name)
-        log.info('[UPLOAD] {0} => {1}'.format(local_path, remote_path))
-        self._client.upload(local_path, self.to_server_path(remote_path))
+        echo.debug('[UPLOAD] {0} => {1}'.format(local_path, remote_path))
+        self._client.upload(local_path, self._to_real_path(remote_path))
         return remote_path
 
     @check_local_path
     def download(self, remote_path, local_path=None):
         """Download a remote file to your machine."""
         local_path = local_path or tempfile.mktemp(suffix=splitext(remote_path)[-1])
-        log.info('[DOWNLOAD] {0} => {1}'.format(remote_path, local_path))
-        self._client.download(self.to_server_path(remote_path), local_path)
+        echo.debug('[DOWNLOAD] {0} => {1}'.format(remote_path, local_path))
+        self._client.download(self._to_real_path(remote_path), local_path)
         return local_path
 
     def ls(self):
-        return self._client.ls(self.np.real_path)
+        def file_in_dir(filename, directory):
+            return (directory in filename) and (filename != directory)
+
+        real_path = self.np.real
+        echo.debug('List "{}"'.format(real_path))
+        return filter(lambda f: file_in_dir(f.name, real_path), self._client.ls(real_path))
 
     def cd(self, directory):
-        self.np.set_dummy_path(directory)
+        self.np.cd(directory)
+        echo.debug('Change directory to "{}"'.format(self.np.pretty))
 
     def rm(self, remote_path):
         """Remove a file on the remote."""
-        log.info('[DELETE] {0}'.format(remote_path))
-        self._client.delete(self.to_server_path(remote_path))
+        echo.debug('[DELETE] {0}'.format(remote_path))
+        self._client.delete(self._to_real_path(remote_path))
         return remote_path
 
     def mkdir(self, directory):
-        return self._client.mkdir(self.to_server_path(directory))
+        return self._client.mkdir(self._to_real_path(directory))
 
     @contextmanager
     def cd_context(self, directory):
@@ -76,9 +81,9 @@ class BaseNutStoreClient(object):
             lambda f: (re.search(pattern=pattern, string=f.name, flags=re.IGNORECASE) and f.size != 0), files
         )
 
-    def to_server_path(self, path):
+    def _to_real_path(self, path):
         """Turn remote path(like /photos) into a real path on server"""
-        return self.np.to_real_path(path)
+        return self.np.to_real(path)
 
     def check_conn(self):
         self.ls()
