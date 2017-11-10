@@ -19,6 +19,7 @@ class BaseNutStoreClient(object):
     def __init__(self, username, password, working_dir, check_conn=True):
         if not working_dir.startswith('/'):
             working_dir = '/' + working_dir
+        self.username = username
         self.np = PathHelper(start=working_dir)
         self._client = easywebdav.connect(self.api, username=username, password=password)
         if check_conn:
@@ -39,7 +40,6 @@ class BaseNutStoreClient(object):
         self._client.upload(local_path, self._to_real_path(remote_path))
         return remote_path
 
-    @check_local_path
     def download(self, remote_path, local_path=None):
         """Download a remote file to your machine."""
         local_path = local_path or tempfile.mktemp(suffix=splitext(remote_path)[-1])

@@ -4,6 +4,8 @@
 demo.py
 bumpversion
 Makefile
+docker-compose.yaml
+Dockerfile
 
 *egg-info
 .eggs

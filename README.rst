@@ -45,7 +45,7 @@ Config
 Config by a config file
 ^^^^^^^^^^^^^^^^^^^^^^^
 
-Nutstore-cli will try to load the config file in  ``~/.nutstore.config`` who's format should like ``.nutstore.config.example``
+Nutstore-cli will try to load the config file in  ``~/.nutstore.config`` whose format should like `.nutstore.config.example`_
 
 Config by environment variable
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -73,8 +73,9 @@ See ``TODO.md``
 
 
 .. |PYVERSION| image:: https://img.shields.io/badge/python-2.7-blue.svg
-.. |VERSION| image:: https://img.shields.io/badge/version-0.3.6-blue.svg
+.. |VERSION| image:: https://img.shields.io/badge/version-0.4.0-blue.svg
 .. |SCREENSHOT| image:: ./docs/sreenshot.png
 .. _NutStore: https://www.jianguoyun.com
 .. _http-prompt: https://github.com/eliangcs/http-prompt
+.. _.nutstore.config.example: https://github.com/Kxrr/nutstore-cli/blob/master/.nutstore.config.example
 

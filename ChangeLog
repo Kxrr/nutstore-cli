@@ -1,6 +1,14 @@
 CHANGES
 =======
 
+0.3.6
+-----
+
+* Display modify time as local timezone
+* Use humanbytes
+* List nested directory
+* Fix docs format
+
 0.3.5
 -----
 
