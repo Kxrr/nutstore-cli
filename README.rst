@@ -37,6 +37,9 @@ Usage
 .. code::
 
     $ nutstore-cli --help
+    $ nutstore-cli cli ...
+    $ nutstore-cli upload ...
+    $ nutstore-cli download ..
 
 
 Config
@@ -73,7 +76,7 @@ See ``TODO.md``
 
 
 .. |PYVERSION| image:: https://img.shields.io/badge/python-2.7-blue.svg
-.. |VERSION| image:: https://img.shields.io/badge/version-0.4.0-blue.svg
+.. |VERSION| image:: https://img.shields.io/badge/version-0.4.1-blue.svg
 .. |SCREENSHOT| image:: ./docs/sreenshot.png
 .. _NutStore: https://www.jianguoyun.com
 .. _http-prompt: https://github.com/eliangcs/http-prompt

@@ -7,3 +7,4 @@
     * Human readable size
     * timezone
     * highlight dir
+- [ ] `nutstore-cli cli` as default command
