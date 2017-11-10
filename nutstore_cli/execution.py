@@ -10,7 +10,7 @@ from parsimonious import ParseError
 from parsimonious.grammar import Grammar
 from parsimonious.nodes import NodeVisitor
 
-from nutstore_cli.utils import echo
+from nutstore_cli.utils import echo, humanbytes
 from nutstore_cli.command_help import help_table
 from nutstore_cli.client.exceptions import WebdavException
 
@@ -39,13 +39,13 @@ RULES = r"""
 
 grammar = Grammar(RULES)
 
-ATTRS = (
+LS_ATTRS = (
     lambda f: path.basename(f.name),
-    'size',
+    lambda f: humanbytes(int(f.size)),
     lambda f: dt_parse(f.mtime).strftime('%Y-%m-%d %H:%M')
 )
 
-LABELS = ('Filename', 'Size', 'Modify Time')
+LS_LABELS = ('Filename', 'Size', 'Modify Time')
 
 
 class ExecutionVisitor(NodeVisitor):
@@ -67,7 +67,10 @@ class ExecutionVisitor(NodeVisitor):
         self.context.should_exit = True
 
     def visit_ls(self, node, children):
-        labels, rows = self.context.client.list(ATTRS, LABELS)
+        labels, rows = self.context.client.list(
+            LS_ATTRS,
+            LS_LABELS
+        )
         name_filter = children[1].children[3].text if children[1].children else ''
         rows = ifilter(lambda row: bool(row[0]), rows)
         if name_filter:

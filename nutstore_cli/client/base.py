@@ -57,7 +57,7 @@ class BaseNutStoreClient(object):
 
     def cd(self, directory):
         self.np.cd(directory)
-        echo.debug('Change directory to "{}"'.format(self.np.pretty))
+        echo.debug('Change directory to "{}"'.format(self.np.real))
 
     def rm(self, remote_path):
         """Remove a file on the remote."""
