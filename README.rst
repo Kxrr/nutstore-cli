@@ -68,11 +68,17 @@ Debugging
 
 Set the environment variable ``DEBUG`` to ``1`` to print the debug output
 
+Contributing
+------------
+
+You're highly encouraged to participate in the development of this project.
+
+By the way, because of lack of documents and tests, please feel free to make a issue before developing if you have any questions.
 
 TODO
 ----
 
-See ``TODO.md``
+See `TODO.md`_
 
 
 .. |PYVERSION| image:: https://img.shields.io/badge/python-2.7-blue.svg
@@ -81,4 +87,5 @@ See ``TODO.md``
 .. _NutStore: https://www.jianguoyun.com
 .. _http-prompt: https://github.com/eliangcs/http-prompt
 .. _.nutstore.config.example: https://github.com/Kxrr/nutstore-cli/blob/master/.nutstore.config.example
+.. _TODO.md: https://github.com/Kxrr/nutstore-cli/blob/master/TODO.md
 
