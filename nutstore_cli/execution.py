@@ -1,7 +1,8 @@
 # encoding: utf-8
 import re
 from os import path
-from itertools import ifilter
+
+from six.moves import filter
 
 import click
 import tabulate
@@ -73,10 +74,10 @@ class ExecutionVisitor(NodeVisitor):
             LS_LABELS
         )
         grep_keywords = children[2].children[4].children[0].text if children[2].children else None
-        rows = ifilter(lambda row: bool(row[0]), rows)
+        rows = filter(lambda row: bool(row[0]), rows)
         if grep_keywords:
             echo.debug('Issue a grep "{}"'.format(grep_keywords))
-            rows = ifilter(lambda row: re.search(grep_keywords, row[0], flags=re.IGNORECASE), rows)
+            rows = filter(lambda row: re.search(grep_keywords, row[0], flags=re.IGNORECASE), rows)
         rows = list(rows)
         rows.sort(key=lambda row: row[2])  # order by mtime
         echo.echo(tabulate.tabulate(rows, headers=labels))

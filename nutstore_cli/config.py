@@ -28,7 +28,7 @@ class ConfigLoader(object):
             return config
         debug('Loading config from {}'.format(filename))
         with open(filename) as f:
-            for line in f.xreadlines():
+            for line in f.readlines():
                 m = self.PARSE_RE.search(line)
                 if m and (m.group(1).strip() in CONFIG_KEYS):
                     k = m.group(1).strip()
