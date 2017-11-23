@@ -10,6 +10,7 @@ from nutstore_cli.client.path_helper import *
 
 import easywebdav
 
+from six.moves.urllib.parse import unquote
 
 class BaseNutStoreClient(object):
     """坚果云"""
@@ -49,6 +50,7 @@ class BaseNutStoreClient(object):
 
     def ls(self):
         def file_in_dir(filename, directory):
+            filename=unquote(filename)
             return (directory in filename) and (filename != directory)
 
         real_path = self.np.real
