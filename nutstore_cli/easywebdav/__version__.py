@@ -1,0 +1,1 @@
+../../easywebdav/easywebdav/__version__.py

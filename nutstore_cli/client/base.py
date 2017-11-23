@@ -8,7 +8,7 @@ from nutstore_cli.utils import echo
 from nutstore_cli.client.utils import check_local_path
 from nutstore_cli.client.path_helper import *
 
-import easywebdav
+from nutstore_cli import easywebdav
 
 from six.moves.urllib.parse import unquote
 
