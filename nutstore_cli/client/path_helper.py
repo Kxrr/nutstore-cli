@@ -4,7 +4,8 @@ from os.path import (
     basename,
     splitext,
 )
-from urlparse import urljoin
+
+from six.moves.urllib.parse import urljoin
 
 __all__ = (
     'join',

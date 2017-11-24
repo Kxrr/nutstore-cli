@@ -3,10 +3,11 @@ import inspect
 import os
 
 from nutstore_cli.client.exceptions import FileNotExistException
+from six import string_types
 
 
 def get_attr(obj, attr_or_fn):
-    if isinstance(attr_or_fn, basestring):
+    if isinstance(attr_or_fn, string_types):
         return getattr(obj, attr_or_fn)
     elif callable(attr_or_fn):
         return attr_or_fn(obj)

@@ -1,5 +1,5 @@
 # coding: utf-8
-from easywebdav.client import WebdavException
+from nutstore_cli.easywebdav.client import WebdavException
 
 
 class NutStoreClientException(WebdavException):

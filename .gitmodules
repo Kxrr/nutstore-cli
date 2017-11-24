@@ -1,0 +1,3 @@
+[submodule "easywebdav"]
+	path = easywebdav
+	url = https://github.com/Kxrr/easywebdav
