@@ -1,7 +1,6 @@
 # coding: utf-8
 import re
 import tempfile
-import logging
 from contextlib import contextmanager
 
 from nutstore_cli.utils import echo

@@ -10,7 +10,7 @@ from nutstore_cli.client.client import NutStoreClient
 from nutstore_cli.context import Context
 from nutstore_cli.completer import completer
 from nutstore_cli.execution import execute
-from nutstore_cli.utils import to_file, echo
+from nutstore_cli.utils import to_file, echo, to_str, to_unicode
 from nutstore_cli.config import get_config
 
 
@@ -31,7 +31,7 @@ class NoPromptIfDefaultOption(click.Option):
 
 def _launch_cli(client):
     """
-    NutStore Command Line Interface (0.4.1)
+    NutStore Command Line Interface (0.4.2)
 
     NutStore WebDAV Settings: https://github.com/Kxrr/nutstore-cli/blob/master/docs/tutorial.md
 
@@ -45,7 +45,7 @@ def _launch_cli(client):
     while True:
         try:
             text = prompt(
-                message=u'[{path}] > '.format(path=context.path),
+                message=u'[{}] > '.format(to_unicode(context.path)),  # message param needs to be unicode
                 completer=completer,
                 history=history,
                 auto_suggest=AutoSuggestFromHistory(),
@@ -85,7 +85,7 @@ def _launch_cli(client):
     cls=NoPromptIfDefaultOption,
 )
 def _main(ctx, username, key, working_dir):
-    client = NutStoreClient(username=username, password=key, working_dir=working_dir, check_conn=False)
+    client = NutStoreClient(username=username, password=key, working_dir=to_str(working_dir), check_conn=False)
     echo.debug('Try to initial a client by given args')
     try:
         client.check_conn()
@@ -109,7 +109,10 @@ def cli(ctx):
 @click.argument('local_path', required=True)
 @click.argument('remote_dir', default=get_config('working_dir'))
 def upload(ctx, local_path, remote_dir):
-    echo.echo(ctx.obj['client'].upload(local_path, remote_dir))
+    echo.echo(ctx.obj['client'].upload(
+        to_str(local_path),
+        to_str(remote_dir)
+    ))
 
 
 @_main.command(help='Download remote file to local machine')
@@ -117,7 +120,10 @@ def upload(ctx, local_path, remote_dir):
 @click.argument('remote_path', required=True)
 @click.argument('local_path', required=False)
 def download(ctx, remote_path, local_path):
-    echo.echo(ctx.obj['client'].download(remote_path, local_path))
+    echo.echo(ctx.obj['client'].download(
+        to_str(remote_path),
+        to_str(local_path)
+    ))
 
 
 def main():

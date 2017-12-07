@@ -11,7 +11,7 @@ from parsimonious import ParseError
 from parsimonious.grammar import Grammar
 from parsimonious.nodes import NodeVisitor
 
-from nutstore_cli.utils import echo, humanbytes
+from nutstore_cli.utils import echo, humanbytes, to_str
 from nutstore_cli.command_help import help_table
 from nutstore_cli.client.exceptions import WebdavException
 
@@ -62,7 +62,7 @@ class ExecutionVisitor(NodeVisitor):
 
     def visit_cd(self, node, children):
         path = children[3].text
-        self.context.client.cd(path)
+        self.context.client.cd(to_str(path))
 
     def visit_exit(self, node, children):
         self.context.should_exit = True
@@ -84,16 +84,16 @@ class ExecutionVisitor(NodeVisitor):
     def visit_download(self, node, children):
         cloud_path = children[2].text
         store_path = children[4].text if len(node.children) == 5 else None
-        dest = self.context.client.download(cloud_path, store_path)
+        dest = self.context.client.download(to_str(cloud_path), to_str(store_path))
         echo.echo(dest)
 
     def visit_upload(self, node, children):
-        local_path = children[2].text
+        local_path = to_str(children[2].text)
         remote_path = self.context.client.upload(local_path)
         echo.echo(remote_path)
 
     def visit_rm(self, node, children):
-        cloud_path = children[2].text
+        cloud_path = to_str(children[2].text)
         if click.confirm('rm {}?'.format(cloud_path)):
             self.context.client.rm(cloud_path)
 

@@ -1,7 +1,10 @@
 # coding: utf-8
 from __future__ import absolute_import
-
+import logging
 import tempfile
+
+logger = logging.getLogger(__name__)
+
 
 UNITS = (
     (2 ** 30.0, 'GB'),
@@ -39,3 +42,27 @@ def to_file(s, dest=None):
     with open(dest, 'w') as g:
         g.write(s)
     return dest
+
+
+def to_str(s):
+    if isinstance(s, str):
+        return s
+    elif isinstance(s, unicode):
+        return s.encode('utf-8')
+    elif s is None:
+        return None
+    else:
+        logger.warning('can\'t convert "{}" to "str" '.format(type(s)))
+        return s
+
+
+def to_unicode(s):
+    if isinstance(s, unicode):
+        return s
+    elif isinstance(s, str):
+        return s.decode('utf-8')
+    elif s is None:
+        return None
+    else:
+        logger.warning('can\'t convert "{}" to "unicode" '.format(type(s)))
+        return s
