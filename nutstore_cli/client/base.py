@@ -3,7 +3,7 @@ import re
 import tempfile
 from contextlib import contextmanager
 
-from nutstore_cli.utils import echo
+from nutstore_cli.utils import output
 from nutstore_cli.client.utils import check_local_path
 from nutstore_cli.client.path_helper import *
 
@@ -35,14 +35,14 @@ class BaseNutStoreClient(object):
         name = basename(local_path)
         directory = remote_dir or self.cwd
         remote_path = join(directory, name)
-        echo.debug('[UPLOAD] {0} => {1}'.format(local_path, remote_path))
+        output.debug('[UPLOAD] {0} => {1}'.format(local_path, remote_path))
         self._client.upload(local_path, self._to_real_path(remote_path))
         return remote_path
 
     def download(self, remote_path, local_path=None):
         """Download a remote file to your machine."""
         local_path = local_path or tempfile.mktemp(suffix=splitext(remote_path)[-1])
-        echo.debug('[DOWNLOAD] {0} => {1}'.format(remote_path, local_path))
+        output.debug('[DOWNLOAD] {0} => {1}'.format(remote_path, local_path))
         self._client.download(self._to_real_path(remote_path), local_path)
         return local_path
 
@@ -51,16 +51,16 @@ class BaseNutStoreClient(object):
             return (directory in filename) and (filename != directory)
 
         real_path = self.np.real
-        echo.debug('List "{}"'.format(real_path))
+        output.debug('List "{}"'.format(real_path))
         return filter(lambda f: file_in_dir(f.name, real_path), self._client.ls(real_path))
 
     def cd(self, directory):
         self.np.cd(directory)
-        echo.debug('Change directory to "{}"'.format(self.np.real))
+        output.debug('Change directory to "{}"'.format(self.np.real))
 
     def rm(self, remote_path):
         """Remove a file on the remote."""
-        echo.debug('[DELETE] {0}'.format(remote_path))
+        output.debug('[DELETE] {0}'.format(remote_path))
         self._client.delete(self._to_real_path(remote_path))
         return remote_path
 

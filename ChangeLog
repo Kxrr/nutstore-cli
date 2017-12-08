@@ -1,6 +1,14 @@
 CHANGES
 =======
 
+* Set cli as default subcommand
+* Convert unicode type to string type explicitly due to lack of supports in easywebdav
+* Add contributing section in readme
+
+0.4.1
+-----
+
+* Release 0.4.1
 * Disable default command due to not working appropriately
 
 0.4.0

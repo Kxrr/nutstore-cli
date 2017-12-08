@@ -3,7 +3,7 @@ import re
 from os.path import expanduser, join, exists
 from os import getenv
 
-from nutstore_cli.utils.echo import debug
+from nutstore_cli.utils.output import debug
 
 CONFIG_KEYS = (
     'username',

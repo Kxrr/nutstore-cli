@@ -1,7 +1,8 @@
 # coding: utf-8
 from __future__ import absolute_import
-import click
 import textwrap
+
+import click
 from prompt_toolkit import prompt
 from prompt_toolkit.auto_suggest import AutoSuggestFromHistory
 from prompt_toolkit.history import InMemoryHistory
@@ -10,7 +11,13 @@ from nutstore_cli.client.client import NutStoreClient
 from nutstore_cli.context import Context
 from nutstore_cli.completer import completer
 from nutstore_cli.execution import execute
-from nutstore_cli.utils import to_file, echo, to_str, to_unicode
+from nutstore_cli.utils import (
+    output,
+    save_text,
+    to_str,
+    to_unicode,
+)
+
 from nutstore_cli.config import get_config
 
 
@@ -37,9 +44,9 @@ def _launch_cli(client):
 
     Project Page: https://github.com/Kxrr/nutstore-cli
     """
-    echo.debug('Client setup done')
-    echo.info('Hello.'.format(client.username))
-    echo.info('Type "help" to see supported commands.')
+    output.debug('Client setup done')
+    output.info('Hello.'.format(client.username))
+    output.info('Type "help" to see supported commands.')
     context = Context(client=client)
     history = InMemoryHistory()
     while True:
@@ -56,7 +63,7 @@ def _launch_cli(client):
             execute(text, context)
             if context.should_exit:
                 break
-    echo.info('Goodbye.')
+    output.info('Goodbye.')
 
 
 @click.group(help=textwrap.dedent(_launch_cli.__doc__))
@@ -86,21 +93,21 @@ def _launch_cli(client):
 )
 def _main(ctx, username, key, working_dir):
     client = NutStoreClient(username=username, password=key, working_dir=to_str(working_dir), check_conn=False)
-    echo.debug('Try to initial a client by given args')
+    output.debug('Try to initial a client by given args')
     try:
         client.check_conn()
     except Exception as e:
         import traceback
-        echo.error('Login failed, detail: {0}\n'.format(to_file(traceback.format_exc())))
+        output.error('Login failed, detail: {0}\n'.format(save_text(traceback.format_exc())))
         import sys
         sys.exit(-1)
     else:
         ctx.obj['client'] = client
 
 
-@_main.command(help='Launch cli')
+@_main.command(help='Launch cli (default)')
 @click.pass_context
-def cli(ctx):
+def interact(ctx):
     _launch_cli(ctx.obj['client'])
 
 
@@ -109,7 +116,7 @@ def cli(ctx):
 @click.argument('local_path', required=True)
 @click.argument('remote_dir', default=get_config('working_dir'))
 def upload(ctx, local_path, remote_dir):
-    echo.echo(ctx.obj['client'].upload(
+    output.echo(ctx.obj['client'].upload(
         to_str(local_path),
         to_str(remote_dir)
     ))
@@ -120,15 +127,21 @@ def upload(ctx, local_path, remote_dir):
 @click.argument('remote_path', required=True)
 @click.argument('local_path', required=False)
 def download(ctx, remote_path, local_path):
-    echo.echo(ctx.obj['client'].download(
+    output.echo(ctx.obj['client'].download(
         to_str(remote_path),
         to_str(local_path)
     ))
 
 
 def main():
+    import sys
+    output.debug('Argv: {}'.format(sys.argv))
+    if '--help' not in sys.argv and not set(sys.argv) & {'interact', 'upload', 'download'}:
+        output.debug('Set "interact" as sub command')
+        sys.argv.insert(1, 'interact')
     _main(obj={})
 
 
 if __name__ == '__main__':
     main()
+

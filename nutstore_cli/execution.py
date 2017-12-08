@@ -11,7 +11,7 @@ from parsimonious import ParseError
 from parsimonious.grammar import Grammar
 from parsimonious.nodes import NodeVisitor
 
-from nutstore_cli.utils import echo, humanbytes, to_str
+from nutstore_cli.utils import output, humanbytes, to_str
 from nutstore_cli.command_help import help_table
 from nutstore_cli.client.exceptions import WebdavException
 
@@ -75,22 +75,22 @@ class ExecutionVisitor(NodeVisitor):
         grep_keywords = children[2].children[4].children[0].text if children[2].children else None
         rows = ifilter(lambda row: bool(row[0]), rows)
         if grep_keywords:
-            echo.debug('Issue a grep "{}"'.format(grep_keywords))
+            output.debug('Issue a grep "{}"'.format(grep_keywords))
             rows = ifilter(lambda row: re.search(grep_keywords, row[0], flags=re.IGNORECASE), rows)
         rows = list(rows)
         rows.sort(key=lambda row: row[2])  # order by mtime
-        echo.echo(tabulate.tabulate(rows, headers=labels))
+        output.echo(tabulate.tabulate(rows, headers=labels))
 
     def visit_download(self, node, children):
         cloud_path = children[2].text
         store_path = children[4].text if len(node.children) == 5 else None
         dest = self.context.client.download(to_str(cloud_path), to_str(store_path))
-        echo.echo(dest)
+        output.echo(dest)
 
     def visit_upload(self, node, children):
         local_path = to_str(children[2].text)
         remote_path = self.context.client.upload(local_path)
-        echo.echo(remote_path)
+        output.echo(remote_path)
 
     def visit_rm(self, node, children):
         cloud_path = to_str(children[2].text)
@@ -98,7 +98,7 @@ class ExecutionVisitor(NodeVisitor):
             self.context.client.rm(cloud_path)
 
     def visit_help(self, node, children):
-        echo.info(help_table)
+        output.info(help_table)
 
     def generic_visit(self, node, children):
         if (not node.expr_name) and node.children:
@@ -116,11 +116,11 @@ def execute(command, context):
     try:
         root = grammar.parse(command)
     except ParseError:
-        echo.error('Invalid command "{0}".'.format(command))
-        echo.info('Type "help" to see supported commands.')
+        output.error('Invalid command "{0}".'.format(command))
+        output.info('Type "help" to see supported commands.')
         return
 
     try:
         visitor.visit(root)
     except WebdavException as e:
-        echo.error(str(e))
+        output.error(str(e))

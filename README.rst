@@ -37,9 +37,6 @@ Usage
 .. code::
 
     $ nutstore-cli --help
-    $ nutstore-cli cli ...
-    $ nutstore-cli upload ...
-    $ nutstore-cli download ..
 
 
 Config
@@ -72,6 +69,8 @@ Contributing
 ------------
 
 You're highly encouraged to participate in the development of this project.
+
+All the developing works is on the ``dev`` branch.
 
 By the way, because of lack of documents and tests, please feel free to make a issue before developing if you have any questions.
 
