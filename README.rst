@@ -45,7 +45,7 @@ Config
 Config by a config file
 ^^^^^^^^^^^^^^^^^^^^^^^
 
-Nutstore-cli will try to load the config file in  ``~/.nutstore.config`` whose format should like `.nutstore.config.example`_
+Nutstore-cli will try to load the config file in  ``~/.nutstore.config`` whose format should like `.nutstore.config.example`_.
 
 Config by environment variable
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -54,16 +54,17 @@ Config by environment variable
 * NUTSTORE_KEY
 * NUTSTORE_WORKING_DIR
 
-Config by pass args to nutstore-cli
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Config by command-line args
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-You can pass args like ``--username=i@example.com`` directly to nutstore-cli
+You can pass args like ``--username=i@example.com`` directly to nutstore-cli,
+use ``Nutstore-cli --help`` to see all command-line args that we support.
 
 
 Debugging
 ---------
 
-Set the environment variable ``DEBUG`` to ``1`` to print the debug output
+Set the environment variable ``DEBUG`` to ``1`` to print the debug output.
 
 Contributing
 ------------

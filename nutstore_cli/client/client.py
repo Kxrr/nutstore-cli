@@ -21,6 +21,7 @@ class NutStoreClient(BaseNutStoreClient):
         """
         :param attrs: Tuple of attribute
         :param labels: Tuple of label name
+        :rtype: (tuple, tuple)
         """
         assert len(attrs) == len(labels)
         file_list = self.ls()

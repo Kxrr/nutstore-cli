@@ -2,6 +2,7 @@
 import re
 from os import path
 from itertools import ifilter
+from urllib import unquote
 
 import click
 import tabulate
@@ -41,7 +42,7 @@ RULES = r"""
 grammar = Grammar(RULES)
 
 LS_ATTRS = (
-    lambda f: path.basename(f.name),
+    lambda f: unquote(path.basename(f.name)).decode('utf-8'),
     lambda f: humanbytes(int(f.size)),
     lambda f: dt_parse(f.mtime).astimezone(tz.tzlocal()).strftime('%Y-%m-%d %H:%M:%S')
 )

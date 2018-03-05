@@ -7,6 +7,7 @@ from prompt_toolkit import prompt
 from prompt_toolkit.auto_suggest import AutoSuggestFromHistory
 from prompt_toolkit.history import InMemoryHistory
 
+from nutstore_cli import __version__
 from nutstore_cli.client.client import NutStoreClient
 from nutstore_cli.context import Context
 from nutstore_cli.completer import completer
@@ -134,8 +135,9 @@ def download(ctx, remote_path, local_path):
 
 
 def main():
+    output.debug('Current version: {}'.format(__version__))
     import sys
-    output.debug('Argv: {}'.format(sys.argv))
+    output.debug('Args: {}'.format(sys.argv))
     if '--help' not in sys.argv and not set(sys.argv) & {'interact', 'upload', 'download'}:
         output.debug('Set "interact" as sub command')
         sys.argv.insert(1, 'interact')

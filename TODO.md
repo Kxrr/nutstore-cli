@@ -8,4 +8,4 @@
 
 - [x] `nutstore-cli cli` as default command
 - [ ] highlight dir in `ls` output
-- [ ] decode filename in `ls` output
+- [x] decode filename in `ls` output
