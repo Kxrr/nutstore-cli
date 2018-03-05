@@ -39,7 +39,7 @@ class NoPromptIfDefaultOption(click.Option):
 
 def _launch_cli(client):
     """
-    NutStore Command Line Interface (0.4.2)
+    NutStore Command Line Interface (0.4.3)
 
     NutStore WebDAV Settings: https://github.com/Kxrr/nutstore-cli/blob/master/docs/tutorial.md
 

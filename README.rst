@@ -82,7 +82,7 @@ See `TODO.md`_
 
 
 .. |PYVERSION| image:: https://img.shields.io/badge/python-2.7-blue.svg
-.. |VERSION| image:: https://img.shields.io/badge/version-0.4.2-blue.svg
+.. |VERSION| image:: https://img.shields.io/badge/version-0.4.3-blue.svg
 .. |SCREENSHOT| image:: ./docs/sreenshot.png
 .. _NutStore: https://www.jianguoyun.com
 .. _http-prompt: https://github.com/eliangcs/http-prompt

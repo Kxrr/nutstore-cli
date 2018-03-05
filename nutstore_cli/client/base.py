@@ -47,6 +47,9 @@ class BaseNutStoreClient(object):
         return local_path
 
     def ls(self):
+        """
+        :rtype: list[easywebdav.client.File]
+        """
         def file_in_dir(filename, directory):
             return (directory in filename) and (filename != directory)
 

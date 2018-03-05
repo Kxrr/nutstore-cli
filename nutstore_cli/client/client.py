@@ -16,17 +16,3 @@ class NutStoreClient(BaseNutStoreClient):
     def download_latest_file(self):
         filename = self.search_latest('')
         return self.download(filename)
-
-    def list(self, attrs, labels):
-        """
-        :param attrs: Tuple of attribute
-        :param labels: Tuple of label name
-        :rtype: (tuple, tuple)
-        """
-        assert len(attrs) == len(labels)
-        file_list = self.ls()
-        rows = map(
-            lambda f: [get_attr(f, attr) for attr in attrs],
-            file_list
-        )
-        return labels, rows

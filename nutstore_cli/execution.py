@@ -1,5 +1,6 @@
 # encoding: utf-8
 import re
+from collections import OrderedDict
 from os import path
 from itertools import ifilter
 from urllib import unquote
@@ -41,13 +42,25 @@ RULES = r"""
 
 grammar = Grammar(RULES)
 
-LS_ATTRS = (
-    lambda f: unquote(path.basename(f.name)).decode('utf-8'),
-    lambda f: humanbytes(int(f.size)),
-    lambda f: dt_parse(f.mtime).astimezone(tz.tzlocal()).strftime('%Y-%m-%d %H:%M:%S')
-)
 
-LS_LABELS = ('Filename', 'Size', 'Modify Time')
+class PrettyFile(object):
+    def __init__(self, efile):
+        """
+        :type efile: easywebdav.client.File
+        """
+        self._file = efile
+        self._name = unquote(path.basename(efile.name)).decode('utf-8')
+
+        self.is_dir = efile.contenttype == 'httpd/unix-directory'
+        self.name = self._name
+        self.size = humanbytes(int(efile.size))
+        self.modify_time = dt_parse(efile.mtime).astimezone(tz.tzlocal()).strftime('%Y-%m-%d %H:%M:%S')
+        if self.is_dir:
+            self.name = click.style(self._name, fg='cyan')
+            self.size = ''
+
+    def pack(self):
+        return self.name, self.size, self.modify_time
 
 
 class ExecutionVisitor(NodeVisitor):
@@ -58,7 +71,6 @@ class ExecutionVisitor(NodeVisitor):
         :type context: nutstore_cli.cli.Context
         """
         super(ExecutionVisitor, self).__init__()
-
         self.context = context
 
     def visit_cd(self, node, children):
@@ -69,18 +81,18 @@ class ExecutionVisitor(NodeVisitor):
         self.context.should_exit = True
 
     def visit_ls(self, node, children):
-        labels, rows = self.context.client.list(
-            LS_ATTRS,
-            LS_LABELS
-        )
+        pretty_files = [PrettyFile(ef) for ef in self.context.client.ls()]
         grep_keywords = children[2].children[4].children[0].text if children[2].children else None
-        rows = ifilter(lambda row: bool(row[0]), rows)
         if grep_keywords:
             output.debug('Issue a grep "{}"'.format(grep_keywords))
-            rows = ifilter(lambda row: re.search(grep_keywords, row[0], flags=re.IGNORECASE), rows)
-        rows = list(rows)
-        rows.sort(key=lambda row: row[2])  # order by mtime
-        output.echo(tabulate.tabulate(rows, headers=labels))
+            pretty_files = ifilter(lambda pfile: re.search(grep_keywords, pfile._name, flags=re.IGNORECASE),
+                                   pretty_files)
+        pretty_files = ifilter(lambda pfile: bool(pfile._name), pretty_files)  # ignore who has a empty filename
+        pretty_files = sorted(pretty_files, key=lambda pfile: pfile.modify_time)
+        output.echo(tabulate.tabulate(
+            [pfile.pack() for pfile in pretty_files],
+            headers=['Filename', 'Size', 'Modify Time']
+        ))
 
     def visit_download(self, node, children):
         cloud_path = children[2].text
